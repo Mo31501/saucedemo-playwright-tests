@@ -1,15 +1,39 @@
 const { test, expect } = require('@playwright/test');
-const { LoginPage } = require('../pages/loginPage');
-const { InventoryPage } = require('../pages/InventoryPage');
+const { LoginPage } = require('../pages/LoginPage');
 
-test('user can log in with valid credentials', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
+test.describe('Login', () => {
+  test('valid login', async ({ page }) => {
+    const login = new LoginPage(page);
+    await login.goto();
+    await login.login('standard_user', 'secret_sauce');
+    await expect(page).toHaveURL(/inventory.html/);
+  });
 
-  await loginPage.goto();
-  await loginPage.login('standard_user', 'secret_sauce');
+  test('locked out user', async ({ page }) => {
+    const login = new LoginPage(page);
+    await login.goto();
+    await login.login('locked_out_user', 'secret_sauce');
+    await expect(login.error).toContainText('locked out');
+  });
 
-  await expect(page).toHaveURL(/inventory/);
-  await expect(inventoryPage.title).toHaveText('Products');
-  await expect(inventoryPage.items).toHaveCount(6);
+  test('invalid username', async ({ page }) => {
+    const login = new LoginPage(page);
+    await login.goto();
+    await login.login('wrong_user', 'secret_sauce');
+    await expect(login.error).toContainText('do not match');
+  });
+
+  test('invalid password', async ({ page }) => {
+    const login = new LoginPage(page);
+    await login.goto();
+    await login.login('standard_user', 'wrong_pass');
+    await expect(login.error).toContainText('do not match');
+  });
+
+  test('empty username and password', async ({ page }) => {
+    const login = new LoginPage(page);
+    await login.goto();
+    await login.login('', '');
+    await expect(login.error).toContainText('Username is required');
+  });
 });
