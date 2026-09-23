@@ -13,7 +13,7 @@ test.describe('Checkout', () => {
     const cart = new CartPage(loginShared);
     await cart.checkout();
     const info = new CheckoutInfoPage(loginShared);
-    await info.fill('John', 'Doe', '12345');
+    await info.fill('Mohamed', 'Ehab', '3152001');
     await info.continueCheckout();
     await expect(loginShared).toHaveURL(/checkout-step-two/);
   });
@@ -25,7 +25,7 @@ test.describe('Checkout', () => {
     const cart = new CartPage(loginShared);
     await cart.checkout();
     const info = new CheckoutInfoPage(loginShared);
-    await info.fill('', 'Doe', '12345');
+    await info.fill('', 'Ehab', '3152001');
     await info.continueCheckout();
     await expect(info.error).toContainText('First Name is required');
   });
@@ -37,7 +37,7 @@ test.describe('Checkout', () => {
     const cart = new CartPage(loginShared);
     await cart.checkout();
     const info = new CheckoutInfoPage(loginShared);
-    await info.fill('John', '', '12345');
+    await info.fill('Mohamed', '', '3152001');
     await info.continueCheckout();
     await expect(info.error).toContainText('Last Name is required');
   });
@@ -49,7 +49,7 @@ test.describe('Checkout', () => {
     const cart = new CartPage(loginShared);
     await cart.checkout();
     const info = new CheckoutInfoPage(loginShared);
-    await info.fill('John', 'Doe', '');
+    await info.fill('Mohamed', 'Ehab', '');
     await info.continueCheckout();
     await expect(info.error).toContainText('Postal Code is required');
   });
@@ -61,10 +61,12 @@ test.describe('Checkout', () => {
     const cart = new CartPage(loginShared);
     await cart.checkout();
     const info = new CheckoutInfoPage(loginShared);
-    await info.fill('John', 'Doe', '12345');
+    await info.fill('Mohamed', 'Ehab', '3152001');
     await info.continueCheckout();
     const overview = new CheckoutOverviewPage(loginShared);
     const totals = await overview.getTotals();
+    const expectedTax = Math.round(totals.itemTotal * 0.08 * 100) / 100;
+    expect(totals.tax).toBe(expectedTax);
     const expectedTotal = Math.round((totals.itemTotal + totals.tax) * 100) / 100;
     expect(totals.total).toBe(expectedTotal);
   });
@@ -76,7 +78,7 @@ test.describe('Checkout', () => {
     const cart = new CartPage(loginShared);
     await cart.checkout();
     const info = new CheckoutInfoPage(loginShared);
-    await info.fill('John', 'Doe', '12345');
+    await info.fill('Mohamed', 'Ehab', '3152001');
     await info.continueCheckout();
     const overview = new CheckoutOverviewPage(loginShared);
     await overview.finish();
@@ -101,7 +103,7 @@ test.describe('Checkout', () => {
     const cart = new CartPage(loginShared);
     await cart.checkout();
     const info = new CheckoutInfoPage(loginShared);
-    await info.fill('John', 'Doe', '12345');
+    await info.fill('Mohamed', 'Ehab', '3152001');
     await info.continueCheckout();
     const overview = new CheckoutOverviewPage(loginShared);
     await overview.cancel();
@@ -109,13 +111,6 @@ test.describe('Checkout', () => {
   });
 
   test('checkout with empty cart', async ({ loginShared }) => {
-    const inventory = new InventoryPage(loginShared);
-    await inventory.goToCart();
-    const cart = new CartPage(loginShared);
-    expect(await cart.getItemCount()).toBe(0);
-  });
-
-    test('checkout with empty cart', async ({ loginShared }) => {
     test.fail(true, 'Known bug: saucedemo allows checkout with an empty cart');
     const inventory = new InventoryPage(loginShared);
     await inventory.goToCart();
