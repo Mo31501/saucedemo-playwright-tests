@@ -1,9 +1,11 @@
-class CartPage {
+const { BasePage } = require('./BasePage');
+
+class CartPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
     this.cartItems = page.locator('.cart_item');
     this.itemNames = page.locator('.inventory_item_name');
-     this.checkoutButton = page.locator('#checkout');
+    this.checkoutButton = page.locator('#checkout');
   }
 
   async getItemNames() {
@@ -14,15 +16,13 @@ class CartPage {
     return this.cartItems.count();
   }
 
-   async checkout() {
-    await this.checkoutButton.click();
+  async removeProduct(name) {
+    await this.page.locator(`[data-test="remove-${this.toTestId(name)}"]`).click();
   }
 
-   async removeProduct(name) {
-    const id = name.toLowerCase().replace(/ /g, '-');
-    await this.page.locator(`[data-test="remove-${id}"]`).click();
+  async checkout() {
+    await this.checkoutButton.click();
   }
-  
 }
 
 module.exports = { CartPage };

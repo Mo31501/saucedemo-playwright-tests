@@ -31,6 +31,7 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+     screenshot: 'only-on-failure',
     // launchOptions: {
     //   slowMo: 1500,
     // },
@@ -42,9 +43,9 @@ export default defineConfig({
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
-             launchOptions: {
-         slowMo: 1500, 
-      },
+      //        launchOptions: {
+      //    slowMo: 1500, 
+      // },
        },
        
      }

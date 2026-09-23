@@ -6,7 +6,7 @@ test.describe('Login', () => {
     const login = new LoginPage(page);
     await login.goto();
     await login.login('standard_user', 'secret_sauce');
-    await expect(page).toHaveURL(/inventory.html/);
+    await expect(page).toHaveURL(/inventory\.html/);
   });
 
   test('locked out user', async ({ page }) => {

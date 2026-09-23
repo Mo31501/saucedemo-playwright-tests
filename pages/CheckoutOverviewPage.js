@@ -1,6 +1,8 @@
-class CheckoutOverviewPage {
+const { BasePage } = require('./BasePage');
+
+class CheckoutOverviewPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
     this.itemTotal = page.locator('.summary_subtotal_label');
     this.tax = page.locator('.summary_tax_label');
     this.total = page.locator('.summary_total_label');
@@ -8,12 +10,16 @@ class CheckoutOverviewPage {
     this.cancelButton = page.locator('#cancel');
   }
 
+  // "Item total: $29.99" -> 29.99
+  parseMoney(text) {
+    return parseFloat(text.replace(/[^0-9.]/g, ''));
+  }
+
   async getTotals() {
-    const parseMoney = (text) => parseFloat(text.replace(/[^0-9.]/g, ''));
     return {
-      itemTotal: parseMoney(await this.itemTotal.textContent()),
-      tax: parseMoney(await this.tax.textContent()),
-      total: parseMoney(await this.total.textContent()),
+      itemTotal: this.parseMoney(await this.itemTotal.textContent()),
+      tax: this.parseMoney(await this.tax.textContent()),
+      total: this.parseMoney(await this.total.textContent()),
     };
   }
 

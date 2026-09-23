@@ -1,6 +1,8 @@
-class CheckoutInfoPage {
+const { BasePage } = require('./BasePage');
+
+class CheckoutInfoPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
     this.firstName = page.locator('#first-name');
     this.lastName = page.locator('#last-name');
     this.postalCode = page.locator('#postal-code');

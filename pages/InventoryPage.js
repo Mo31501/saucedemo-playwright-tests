@@ -1,13 +1,15 @@
-class InventoryPage {
+const { BasePage } = require('./BasePage');
+
+class InventoryPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
     this.sortDropdown = page.locator('[data-test="product-sort-container"]');
     this.productNames = page.locator('.inventory_item_name');
     this.productPrices = page.locator('.inventory_item_price');
-     this.cartBadge = page.locator('.shopping_cart_badge');
+    this.cartBadge = page.locator('.shopping_cart_badge');
     this.cartLink = page.locator('.shopping_cart_link');
     this.menuButton = page.locator('#react-burger-menu-btn');
-   this.logoutLink = page.locator('#logout_sidebar_link');
+    this.logoutLink = page.locator('#logout_sidebar_link');
   }
 
   async sortBy(option) {
@@ -20,16 +22,15 @@ class InventoryPage {
 
   async getProductPrices() {
     const prices = await this.productPrices.allTextContents();
-    return prices.map(p => parseFloat(p.replace('$', '')));
+    return prices.map(price => parseFloat(price.replace('$', '')));
   }
-   async addProductToCart(name) {
-    const id = name.toLowerCase().replace(/ /g, '-');
-    await this.page.locator(`[data-test="add-to-cart-${id}"]`).click();
+
+  async addProductToCart(name) {
+    await this.page.locator(`[data-test="add-to-cart-${this.toTestId(name)}"]`).click();
   }
 
   async removeProductFromCart(name) {
-    const id = name.toLowerCase().replace(/ /g, '-');
-    await this.page.locator(`[data-test="remove-${id}"]`).click();
+    await this.page.locator(`[data-test="remove-${this.toTestId(name)}"]`).click();
   }
 
   async getCartCount() {
@@ -40,11 +41,11 @@ class InventoryPage {
   async goToCart() {
     await this.cartLink.click();
   }
-  async logout() {
-  await this.menuButton.click();
-  await this.logoutLink.click();
-}
-}
 
+  async logout() {
+    await this.menuButton.click();
+    await this.logoutLink.click();
+  }
+}
 
 module.exports = { InventoryPage };
