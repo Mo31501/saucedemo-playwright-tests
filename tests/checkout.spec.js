@@ -115,4 +115,14 @@ test.describe('Checkout', () => {
     expect(await cart.getItemCount()).toBe(0);
   });
 
+    test('checkout with empty cart', async ({ loginShared }) => {
+    test.fail(true, 'Known bug: saucedemo allows checkout with an empty cart');
+    const inventory = new InventoryPage(loginShared);
+    await inventory.goToCart();
+    const cart = new CartPage(loginShared);
+    expect(await cart.getItemCount()).toBe(0);
+    await cart.checkout();
+    await expect(loginShared).toHaveURL(/cart\.html/);
+  });
+
 });
